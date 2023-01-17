@@ -1,5 +1,6 @@
 import tkinter
 import cv2
+from tkinter import filedialog
 
 # 読み込ませる画像のファイルパス
 FILE_PATH = "image/image1.png"
@@ -21,11 +22,63 @@ FONT = ("", 10)
 # 白黒化時の閾値
 THRESHOLD = 100
 
+class Select():
+    def __init__(self,app):
+        self.app = app
+        self.create_select_widget()
+
+    def create_select_widget(self):
+        self.create_button()
+        self.create_textbox()
+        self.create_canvas()
+
+    def create_button(self):
+        self.start = tkinter.Button(
+            height = 2,
+            width = 6,
+            text = "画像を選択",
+            command = self.get_path
+        )
+        self.start.pack()
+
+    def get_path(self):
+        global canvas_image
+        global FILE_PATH
+        typ = [('イメージファイル','*.png')] 
+        dir = 'C:\\pg'
+        FILE_PATH = filedialog.askopenfilename(filetypes = typ, initialdir = dir)
+        canvas_image = tk.PhotoImage(file=FILE_PATH)
+        self.canvas.create_image(640/2, 640/2, image=canvas_image)
+
+        self.start2 = tkinter.Button(
+            height = 2,
+            width = 6,
+            text = "スタート",
+            command = self.new_life
+        )
+        self.start2.pack()
+
+    def create_textbox(self):
+        self.text = tkinter.Label(
+            text='あなたの選んだ画像',
+        )
+        self.text.pack()
+
+    def create_canvas(self):
+        self.canvas = tkinter.Canvas(width=640, height=640,background='white')
+        self.canvas.pack()
+
+    def new_life(self):
+        self.start.destroy()
+        self.start2.destroy()
+        self.text.destroy()
+        self.canvas.destroy()
+        self.picross = Picross(self.app)
+
 
 class Picross():
-    def __init__(self, app, file_path):
-        self.app = app
-        self.file_path = file_path
+    def __init__(self, app):
+        self.file_path = FILE_PATH
         self.load_image = None
 
         # 白黒化した画像オブジェクト

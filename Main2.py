@@ -1,26 +1,80 @@
-import tkinter
 import cv2
+import tkinter as tk
+from tkinter import filedialog
 
-# 読み込ませる画像のファイルパス
-FILE_PATH = "image/image1.png"
-
-# 画像のサイズ
-IMAGE_WIDTH = 32
-IMAGE_HEIGHT = 32
-
-# 色設定
 DRAW_COLOR = "#000000"
 NO_DRAW_COLOR = "#FFFFFF"
 
-# 印を表すテキスト
+IMAGE_WIDTH = 32
+IMAGE_HEIGHT = 32
+
 MARK_TEXT = "X"
 
-# フォント
 FONT = ("", 10)
 
-# 白黒化時の閾値
 THRESHOLD = 100
 
+class Base():
+
+    def __init__(self):
+        self.app = tk.Tk()
+        self.app.geometry("1080x1080")
+        self.select = Select(self.app)
+
+        self.app.mainloop()
+
+class Select():
+    def __init__(self,app):
+        self.app = app
+        self.create_select_widget()
+
+    def create_select_widget(self):
+        self.create_button()
+        self.create_textbox()
+        self.create_canvas()
+
+    def create_button(self):
+        self.start = tk.Button(
+            height = 2,
+            width = 6,
+            text = "画像を選択",
+            command = self.get_path
+        )
+        self.start.pack()
+
+    def get_path(self):
+        global canvas_image
+        global FILE_PATH
+        typ = [('イメージファイル','*.png')] 
+        dir = 'C:\\pg'
+        FILE_PATH = filedialog.askopenfilename(filetypes = typ, initialdir = dir)
+        canvas_image = tk.PhotoImage(file=FILE_PATH)
+        self.canvas.create_image(640/2, 640/2, image=canvas_image)
+
+        self.start2 = tk.Button(
+            height = 2,
+            width = 6,
+            text = "スタート",
+            command = self.new_life
+        )
+        self.start2.pack()
+
+    def create_textbox(self):
+        self.text = tk.Label(
+            text='あなたの選んだ画像',
+        )
+        self.text.pack()
+
+    def create_canvas(self):
+        self.canvas = tk.Canvas(width=640, height=640,background='white')
+        self.canvas.pack()
+
+    def new_life(self):
+        self.start.destroy()
+        self.start2.destroy()
+        self.text.destroy()
+        self.canvas.destroy()
+        self.picross = Picross(self.app)
 
 class Picross():
     def __init__(self, app, file_path):
@@ -60,10 +114,10 @@ class Picross():
     def readImage(self):
         '画像を読み込む'
 
-        if len(self.file_path) != 0:
+        if len(FILE_PATH) != 0:
 
             # ファイルを開いて読み込む
-            image = cv2.imread(self.file_path)
+            image = cv2.imread(FILE_PATH)
 
             # 画像のリサイズ
             self.load_image = cv2.resize(image,dsize=[IMAGE_WIDTH, IMAGE_HEIGHT],interpolation=cv2.INTER_NEAREST
@@ -175,25 +229,25 @@ class Picross():
         '各種ウィジェットを作成・配置するメソッド'
 
         # 左上のフレームを作成・配置
-        self.frame_UL = tkinter.Frame(
+        self.frame_UL = tk.Frame(
             self.app,
         )
         self.frame_UL.grid(column=0, row=0)
 
         # 右上のフレームを作成・配置
-        self.frame_UR = tkinter.Frame(
+        self.frame_UR = tk.Frame(
             self.app,
         )
         self.frame_UR.grid(column=1, row=0)
 
         # 左下のフレームを作成・配置
-        self.frame_BL = tkinter.Frame(
+        self.frame_BL = tk.Frame(
             self.app,
         )
         self.frame_BL.grid(column=0, row=1)
 
         # 右下のフレームを作成・配置
-        self.frame_BR = tkinter.Frame(
+        self.frame_BR = tk.Frame(
             self.app,
         )
         self.frame_BR.grid(column=1, row=1)
@@ -214,7 +268,7 @@ class Picross():
         'ボタンを作成'
 
         # 解答表示用のボタンの作成・配置
-        self.button_answer = tkinter.Button(
+        self.button_answer = tk.Button(
             master,
             text="解答表示",
             command=self.drawAnswer
@@ -228,12 +282,12 @@ class Picross():
             for i in range(self.image_width):
 
                 # ラベルウィジェットを作成
-                label = tkinter.Label(
+                label = tk.Label(
                     master,
                     width=2,
                     height=1,
                     bg=NO_DRAW_COLOR,
-                    relief=tkinter.SUNKEN,
+                    relief=tk.SUNKEN,
                     font=FONT
                 )
                 # ラベルを配置
@@ -250,13 +304,13 @@ class Picross():
                 font=FONT
             )
             # 上方向から順にパック
-            text.pack(side=tkinter.TOP)
+            text.pack(side=tk.TOP)
 
     def createHztlAxis(self, master):
         '横軸に各列の塗りつぶすマス数を記載したラベルを作成'
 
         for i in range(self.image_width):
-            text = tkinter.Label(
+            text = tk.Label(
                 master,
                 text=self.column[i],
                 wraplength=1,  # １文字で改行
@@ -264,7 +318,7 @@ class Picross():
                 font=FONT
             )
             # 左方向から順にパック
-            text.pack(side=tkinter.LEFT)
+            text.pack(side=tk.LEFT)
 
     def setEvents(self):
         '各種イベントを設定するメソッド'
@@ -367,6 +421,5 @@ class Picross():
                     text=""
                 )
 
-app = tkinter.Tk()
-picross = Picross(app, FILE_PATH)
-app.mainloop()
+if __name__ == "__main__":
+    base = Base()

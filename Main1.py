@@ -15,12 +15,13 @@ class Base():
     def __init__(self):
         self.app = tk.Tk()
         self.app.geometry("1080x1080")
-        self.select = Select()
+        self.select = Select(self.app)
 
         self.app.mainloop()
 
 class Select():
-    def __init__(self):
+    def __init__(self,app):
+        self.app = app
         self.create_select_widget()
 
     def create_select_widget(self):
@@ -69,20 +70,35 @@ class Select():
         self.start2.destroy()
         self.text.destroy()
         self.canvas.destroy()
-        self.picross = Picross()
+        self.picross = Picross(self.app)
 
 class Picross():
-    def __init__(self):
+    def __init__(self,app):
         self.column = []
         self.row = []
 
+        self.create_frame(app)
         self.resize_img()
         self.binary_img()
         self.create_picross_widget()
-        self.row = []
-        self.row_text()
-        self.column_text()
-        self.click_box()
+
+    def create_frame(self,app):
+
+        #写真表示
+        self.frame_MM = tk.Frame(app)
+        self.frame_MM.grid(column=0,row=0)
+ 
+        #横の数字表示
+        self.frame_MR = tk.Frame(app)
+        self.frame_MR.grid(column=1,row=0)
+
+        #縦向きの数字表示
+        self.frame_BM = tk.Frame(app)
+        self.frame_BM.grid(column=0,row=1)
+
+        #ピクロス
+        self.frame_BR = tk.Frame(app)
+        self.frame_BR.grid(column=1,row=1)
 
     def resize_img(self):
         self.image = cv2.imread(FILE_PATH)
@@ -93,23 +109,19 @@ class Picross():
         ret2, self.image1 = cv2.threshold(gray_image, 0, 255, cv2.THRESH_OTSU)
 
     def create_picross_widget(self):
-        self.create_pic_button()
-        self.create_label_button()
-        self.create_pic_canvas()
-        self.row_number()
-        self.column_number()
 
-    def create_pic_button(self):
-        self.ans_button = tk.Button(
-            height = 2,
-            width = 18,
-            text = "解答表示",
-        )
-        self.ans_button.grid(row=0,column=0)
+        self.create_label_button(self.frame_BR)
+        self.create_pic_canvas(self.frame_MM)
+
+        self.row_text(self.frame_MR)
+        self.row_number()
+        
+        self.column_text(self.frame_BM)
+        self.column_number()
     
-    def create_pic_canvas(self):
+    def create_pic_canvas(self,master):
         global canvas_image1
-        self.canvas1 = tk.Canvas(width=200, height=200, background='white')
+        self.canvas1 = tk.Canvas(master,width=200, height=200, background='white')
         self.canvas1.grid(row=1,column=0)
         self.image10 = cv2.imread(FILE_PATH)
         self.re_image = cv2.resize(self.image10,dsize=[200, 200], interpolation=cv2.INTER_NEAREST)
@@ -119,20 +131,19 @@ class Picross():
         canvas_image1 = tk.PhotoImage(file='/Users/lemon1366/Desktop/Pic/image/resize_image/resize_image.png')
         self.canvas1.create_image(100, 100, image=canvas_image1)
 
-    def create_label_button(self):
-        for i in range(32):
-            for j in range(32):
+    def create_label_button(self,master):
+        for j in range(32):
+            for i in range(32):
                 self.grid_label = tk.Label(
+                    master,
                     height = 1,
                     width = 2,
                     bg=NO_DRAW_COLOR,
                     relief=tk.SUNKEN,
                 )
-                self.grid_label.grid(row=i+2,column=j+2)
+                self.grid_label.grid(column=i,row=j)
     
     def row_number(self):
-        global row
-        row = []
         for i in range(32):
             cnt = 0
             self.before_pixel = None
@@ -150,11 +161,9 @@ class Picross():
 
                 self.before_pixel = self.pixel
 
-            row.append(row_list)
+            self.row.append(row_list)
 
     def column_number(self):
-        global column
-        column = []
         for i in range(32):
             cnt = 0
             self.before_pixel = None
@@ -172,30 +181,33 @@ class Picross():
 
                 self.before_pixel = self.pixel
 
-            column.append(column_list)
+            self.column.append(column_list)
     
-    def row_text(self):
-        for i in range(32):
+    def row_text(self,master):
+        for j in range(32):
             self.text = tk.Label(
-                text = row[i],
+                master,
+                text = self.row[j],
+                height=1,
             )
-            self.text.grid(row=i+2,column=0)
-        print(row)
+            self.text.pack(side=tk.TOP)
 
-    def column_text(self):
+    def column_text(self,master):
         for i in range(32):
             self.text = tk.Label(
-                text = column[i],
+                master,
+                text = self.column[i],
                 wraplength=1,
+                width=2,
             )
-            self.text.grid(row=1,column=i+2)
+            self.text.pack(side=tk.LEFT)
 
     def setEvents(self):
-        for j in range(self.image_height):
-            for i in range(self.image_width):
+        for j in range(32):
+            for i in range(32):
 
                 # gridへの配置場所からウィジェット取得
-                widgets = self.grid_label.grid_slaves(row=i+2,column=j+2)
+                widgets = self.frame_BR.grid_slaves(row=i,column=j)
                 label = widgets[0]
 
                 # 左クリック時のイベント設定
