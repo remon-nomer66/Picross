@@ -19,6 +19,7 @@ class Base():
     def __init__(self):
         self.app = tk.Tk()
         self.app.geometry("1080x1080")
+        self.app.title("PICROSS")
         self.select = Select(self.app)
 
         self.app.mainloop()
@@ -65,8 +66,11 @@ class Select():
         self.create_button1(self.frame_7) 
 
     def Picross_OP(self,master):
-        self.canvas = tk.Canvas(master,width=320, height=60,)
-        self.canvas.grid(column=0,row=0)
+        global canvas_image1
+        self.canvas1 = tk.Canvas(master,width=320, height=60, background="white")
+        self.canvas1.grid(column=0,row=0)
+        canvas_image1 = tk.PhotoImage(file="/Users/lemon1366/Desktop/Pic/image/PICROSS.png")
+        self.canvas1.create_image(160, 40, image=canvas_image1)
 
     def create_button(self,master):
         self.start = tk.Button(
