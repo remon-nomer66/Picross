@@ -26,21 +26,72 @@ class Base():
 class Select():
     def __init__(self,app):
         self.app = app
+        self.create_frame()
         self.create_select_widget()
 
-    def create_select_widget(self):
-        self.create_button()
-        self.create_textbox()
-        self.create_canvas()
+    def create_frame(self):
+            self.frame_0 = tk.Frame(self.app)
+            self.frame_0.grid(column=0, row=0)
 
-    def create_button(self):
+            self.frame_1 = tk.Frame(self.app)
+            self.frame_1.grid(column=0, row=1)
+
+            self.frame_2 = tk.Frame(self.app)
+            self.frame_2.grid(column=0, row=2)
+
+            self.frame_3 = tk.Frame(self.app)
+            self.frame_3.grid(column=0, row=3)
+
+            self.frame_4 = tk.Frame(self.app)
+            self.frame_4.grid(column=0, row=4)
+
+            self.frame_5 = tk.Frame(self.app)
+            self.frame_5.grid(column=0, row=5)
+
+            self.frame_6 = tk.Frame(self.app)
+            self.frame_6.grid(column=0, row=6)
+
+            self.frame_7 = tk.Frame(self.app)
+            self.frame_7.grid(column=0, row=7)
+
+    def create_select_widget(self):
+        self.Picross_OP(self.frame_0) #0
+        self.create_button(self.frame_1) #1
+        self.create_textbox1(self.frame_2) #2
+        self.create_canvas(self.frame_3) #3
+        self.create_textbox2(self.frame_4) #4
+        self.DOD(self.frame_5) #5
+        self.create_textbox3(self.frame_6) #6
+        self.create_button1(self.frame_7) 
+
+    def Picross_OP(self,master):
+        self.canvas = tk.Canvas(master,width=320, height=60,)
+        self.canvas.grid(column=0,row=0)
+
+    def create_button(self,master):
         self.start = tk.Button(
+            master,
             height = 2,
             width = 6,
             text = "画像を選択",
-            command = self.get_path
+            command = lambda:[self.get_path(), self.activation()]
         )
-        self.start.pack()
+        self.start.grid(column=0,row=0)
+
+    def create_textbox1(self,master):
+        self.text1 = tk.Label(
+            master,
+            text='あなたの選んだ画像',
+        )
+        self.text1.grid(column=0,row=0)
+
+    def create_canvas(self,master):
+        self.canvas = tk.Canvas(
+            master,
+            width=320,
+            height=320,
+            background='white')
+        self.canvas.grid(column=0,row=0)
 
     def get_path(self):
         global canvas_image
@@ -49,239 +100,221 @@ class Select():
         dir = 'C:\\pg'
         FILE_PATH = filedialog.askopenfilename(filetypes = typ, initialdir = dir)
         canvas_image = tk.PhotoImage(file=FILE_PATH)
-        self.canvas.create_image(640/2, 640/2, image=canvas_image)
+        self.canvas.create_image(160, 160, image=canvas_image)
 
-        self.start2 = tk.Button(
+    def create_textbox2(self,master):
+        self.text2 = tk.Label(
+            master,
+            text='==========難易度==========',
+        )
+        self.text2.grid(column=0,row=0)
+
+    def DOD(self,master):
+            self.difficulty1 = tk.Button(
+                master,
+                height = 3,
+                width = 3,
+                text = "簡単",
+                state="disable",
+                command = lambda:[self.select_0(),self.activation_start()]
+            )
+            self.difficulty1.grid(column=0,row=0)
+
+            self.difficulty2 = tk.Button(
+                master,
+                height = 3,
+                width = 3,
+                text = "普通",
+                state="disable",
+                command = lambda:[self.select_1(),self.activation_start()]
+            )
+            self.difficulty2.grid(column=1,row=0)
+
+            self.difficulty3 = tk.Button(
+                master,
+                height = 3,
+                width = 3,
+                text = "鬼畜",
+                state="disable",
+                command = lambda:[self.select_2(),self.activation_start()]
+            )
+            self.difficulty3.grid(column=2,row=0)
+
+    def select_0(self):
+        global IMAGE_WIDTH
+        global IMAGE_HEIGHT
+        IMAGE_WIDTH = IMAGE_HEIGHT = 8
+
+    def select_1(self):
+        global IMAGE_WIDTH
+        global IMAGE_HEIGHT
+        IMAGE_WIDTH = IMAGE_HEIGHT = 16
+
+    def select_2(self):
+        global IMAGE_WIDTH
+        global IMAGE_HEIGHT
+        IMAGE_WIDTH = IMAGE_HEIGHT = 32
+
+    def create_textbox3(self,master):
+        self.text3 = tk.Label(
+            master,
+            text='========================',
+        )
+        self.text3.grid(column=0,row=0)
+
+    def create_button1(self,master):
+        self.start = tk.Button(
+            master,
             height = 2,
             width = 6,
             text = "スタート",
+            state="disable",
             command = self.new_life
         )
-        self.start2.pack()
+        self.start.grid(column=0,row=0)
 
-    def create_textbox(self):
-        self.text = tk.Label(
-            text='あなたの選んだ画像',
-        )
-        self.text.pack()
+    def activation(self):
+        self.difficulty1["state"] = "normal"
+        self.difficulty2["state"] = "normal"
+        self.difficulty3["state"] = "normal"
 
-    def create_canvas(self):
-        self.canvas = tk.Canvas(width=640, height=640,background='white')
-        self.canvas.pack()
+    def activation_start(self):
+        self.start["state"] = "normal"
 
     def new_life(self):
-        self.start.destroy()
-        self.start2.destroy()
-        self.text.destroy()
-        self.canvas.destroy()
+        self.frame_0.destroy()
+        self.frame_1.destroy()
+        self.frame_2.destroy()
+        self.frame_3.destroy()
+        self.frame_4.destroy()
+        self.frame_5.destroy()
+        self.frame_6.destroy()
+        self.frame_7.destroy()
         self.picross = Picross(self.app)
 
 class Picross():
-    def __init__(self, app, file_path):
+    def __init__(self, app):
         self.app = app
-        self.file_path = file_path
         self.load_image = None
-
-        # 白黒化した画像オブジェクト
         self.image = None
 
-        # 画像のサイズ
         self.iamge_width = 0
         self.image_height = 0
 
-        # 各行に対して塗り潰すマス数のリスト
         self.row = []
-
-        # 各列に対して塗り潰すマス数のリスト
         self.column = []
 
-        # 画像を読み込む
         self.readImage()
-
-        # 画像を白黒化する
         self.createBinaryImage()
-
-        # 塗りつぶすマス数を取得する
         self.getRowPixels()
         self.getColumnPixels()
-
-        # ウィジェットを作成する
         self.createWidgets()
 
-        # イベント処理を設定する
         self.setEvents()
 
     def readImage(self):
-        '画像を読み込む'
-
         if len(FILE_PATH) != 0:
-
-            # ファイルを開いて読み込む
             image = cv2.imread(FILE_PATH)
-
-            # 画像のリサイズ
             self.load_image = cv2.resize(image,dsize=[IMAGE_WIDTH, IMAGE_HEIGHT],interpolation=cv2.INTER_NEAREST
             )
 
     def createBinaryImage(self):
-        '画像を白黒化する'
-
-        # 画像をグレースケール化
         gray_image = cv2.cvtColor(self.load_image, cv2.COLOR_BGR2GRAY)
-
-        # 画像を白黒化（閾値は自動設定）
         ret, self.image = cv2.threshold(
             gray_image, THRESHOLD, 255,
             cv2.THRESH_BINARY
         )
-
-        # 画像のサイズを取得
         self.image_width = self.image.shape[1]
         self.image_height = self.image.shape[0]
 
     def getRowPixels(self):
-        '各行の塗りつぶすマス数を取得'
-
-        # 各行に対するループ
         for j in range(self.image_height):
-
-            # 行単位でリストを作成
             row_list = []
-
-            # 行単位でカウント等を初期化
             before_pixel = None
             count = 0
 
-            # 行内に対するループ
             for i in range(self.image_width):
-
-                # ピクセルの色を取得
                 pixel = self.image[j, i]
-
-                # 塗り潰すべきマスがいくつ連続しているかをカウント
                 if pixel == 0:
                     count += 1
                 else:
-                    # 塗り潰すべきマスが途切れた場合
                     if before_pixel == 0:
-
-                        # リストにカウントした数を追加
                         row_list.append(count)
                         count = 0
-
-                        # 区切りが分かるように全角スペースも追加
                         row_list.append('　')
 
-                # 前のピクセルの情報を覚えておく
                 before_pixel = pixel
 
-            # 1行分カウントが終わったらリストに最後に追加
             if count != 0:
                 row_list.append(count)
 
-            # １行分のリストを全行分管理するリストに追加
             self.row.append(row_list)
 
     def getColumnPixels(self):
-        '各行の塗りつぶすマス数を取得'
-
-        # 各列に対するループ
         for i in range(self.image_width):
-
-            # 列単位でリストを作成
             column_list = []
-
-            # 列単位でカウント等を初期化
             before_pixel = None
             count = 0
 
-            # 列内に対するループ
             for j in range(self.image_height):
-
-                # ピクセルの色を取得
                 pixel = self.image[j, i]
-
-                # 塗り潰すべきマスがいくつ連続しているかをカウント
                 if pixel == 0:
                     count += 1
                 else:
-                    # 塗り潰すべきマスが途切れた場合
                     if before_pixel == 0:
-
-                        # リストにカウントした数を追加
                         column_list.append(count)
                         count = 0
-
-                        # 区切りが分かるように全角スペースも追加
                         column_list.append('　')
 
-                # 前のピクセルの情報を覚えておく
                 before_pixel = pixel
 
-            # 1列分カウントが終わったらリストに最後に追加
             if count != 0:
                 column_list.append(count)
 
-            # １列分のリストを全列分管理するリストに追加
             self.column.append(column_list)
 
     def createWidgets(self):
-        '各種ウィジェットを作成・配置するメソッド'
-
-        # 左上のフレームを作成・配置
-        self.frame_UL = tk.Frame(
-            self.app,
-        )
+        self.frame_UL = tk.Frame(self.app,)
         self.frame_UL.grid(column=0, row=0)
 
-        # 右上のフレームを作成・配置
-        self.frame_UR = tk.Frame(
-            self.app,
-        )
+        self.frame_UR = tk.Frame(self.app,)
         self.frame_UR.grid(column=1, row=0)
 
-        # 左下のフレームを作成・配置
-        self.frame_BL = tk.Frame(
-            self.app,
-        )
+        self.frame_BL = tk.Frame(self.app,)
         self.frame_BL.grid(column=0, row=1)
 
-        # 右下のフレームを作成・配置
-        self.frame_BR = tk.Frame(
-            self.app,
-        )
+        self.frame_BR = tk.Frame(self.app,)
         self.frame_BR.grid(column=1, row=1)
 
-        # マスを右下のフレーム上に作成
         self.createSquares(self.frame_BR)
-
-        # 縦軸を左下のフレーム上に作成
         self.createVtclAxis(self.frame_BL)
-
-        # 横軸を右上のフレーム上に作成
         self.createHztlAxis(self.frame_UR)
-
-        # ボタンを左上のフレームに作成
         self.createButtons(self.frame_UL)
+        self.create_pic_canvas(self.frame_UL)
 
     def createButtons(self, master):
-        'ボタンを作成'
-
-        # 解答表示用のボタンの作成・配置
         self.button_answer = tk.Button(
             master,
             text="解答表示",
             command=self.drawAnswer
         )
-        self.button_answer.pack()
+        self.button_answer.grid(column=0,row=0)
+
+    def create_pic_canvas(self,master):
+        global canvas_image1
+        self.canvas1 = tk.Canvas(master,width=200, height=200, background='white')
+        self.canvas1.grid(row=1,column=0)
+        self.image10 = cv2.imread(FILE_PATH)
+        self.re_image = cv2.resize(self.image10,dsize=[200, 200], interpolation=cv2.INTER_NEAREST)
+        gray_image = cv2.cvtColor(self.re_image, cv2.COLOR_BGR2GRAY)
+        ret2, self.image2 = cv2.threshold(gray_image, 0, 255, cv2.THRESH_OTSU)
+        cv2.imwrite('/Users/lemon1366/Desktop/Pic/image/resize_image/resize_image.png', self.image2)
+        canvas_image1 = tk.PhotoImage(file='/Users/lemon1366/Desktop/Pic/image/resize_image/resize_image.png')
+        self.canvas1.create_image(100, 100, image=canvas_image1)
 
     def createSquares(self, master):
-        'マスと見立てたラベルを作成'
-
         for j in range(self.image_height):
             for i in range(self.image_width):
-
-                # ラベルウィジェットを作成
                 label = tk.Label(
                     master,
                     width=2,
@@ -290,132 +323,85 @@ class Picross():
                     relief=tk.SUNKEN,
                     font=FONT
                 )
-                # ラベルを配置
                 label.grid(column=i, row=j)
 
     def createVtclAxis(self, master):
-        '縦軸に各行の塗りつぶすマス数を記載したラベルを作成'
-
         for j in range(self.image_height):
-            text = tkinter.Label(
+            text = tk.Label(
                 master,
                 text=self.row[j],
                 height=1,
                 font=FONT
             )
-            # 上方向から順にパック
             text.pack(side=tk.TOP)
 
     def createHztlAxis(self, master):
-        '横軸に各列の塗りつぶすマス数を記載したラベルを作成'
-
         for i in range(self.image_width):
             text = tk.Label(
                 master,
                 text=self.column[i],
-                wraplength=1,  # １文字で改行
+                wraplength=1,
                 width=2,
                 font=FONT
             )
-            # 左方向から順にパック
             text.pack(side=tk.LEFT)
 
     def setEvents(self):
-        '各種イベントを設定するメソッド'
-
-        # 全ラベルに対してイベントを設定
         for j in range(self.image_height):
             for i in range(self.image_width):
-
-                # gridへの配置場所からウィジェット取得
                 widgets = self.frame_BR.grid_slaves(column=i, row=j)
                 label = widgets[0]
-
-                # 左クリック時のイベント設定
                 label.bind("<ButtonPress-1>", self.draw)
-
-                # 右クリック時のイベント設定
                 label.bind("<ButtonPress-2>", self.mark)
-
-                # Shiftキー押しながらマウスインした時のイベント設定
                 label.bind("<Shift-Enter>", self.multiDraw)
-
-                # Ctrlキー押しながらマウスインした時のイベント設定
                 label.bind("<Control-Enter>", self.multiMark)
 
     def draw(self, event):
-        '''
-        ラベルを左クリックされた時に
-        マスに色を塗るorマスの色を元に戻すメソッド
-        '''
-
-        # クリックされたラベルを取得
         label = event.widget
 
         if label.cget("text") == MARK_TEXT:
-            # 既にマークがつけられている場合は塗りつぶさない
             return
 
         if label.cget("bg") == NO_DRAW_COLOR:
-            # まだ塗りつぶされていない場合は塗り潰す
             label.config(
                 bg=DRAW_COLOR,
             )
-
         else:
-            # 既に塗りつぶされている場合は元に戻す
             label.config(
                 bg=NO_DRAW_COLOR,
             )
 
     def mark(self, event):
-        '''
-        ラベルを右クリックされた時に
-        マスに印をつけるor元に戻すメソッド
-        '''
-        # クリックされたラベルを取得
         label = event.widget
 
         if label.cget("bg") == DRAW_COLOR:
-            # 既に塗りつぶされていればマークつけない
             return
 
         if label.cget("text") != MARK_TEXT:
-            # まだマーク付けられていない場合はマークつける
             label.config(
                 text=MARK_TEXT
             )
-
         else:
-            # 既にマークつけられている場合は元に戻す
             label.config(
                 text=''
             )
 
     def multiDraw(self, event):
-        'Shift押しながらマウスインした場合にマスに色を塗る'
         self.draw(event)
 
     def multiMark(self, event):
-        'Control押しながらマウスインした場合にマスに印つける色'
         self.mark(event)
 
     def drawAnswer(self):
-        '解答を表示する'
-
         for j in range(self.image_height):
             for i in range(self.image_width):
-
-                # gridへの配置場所からウィジェット取得
                 widgets = self.frame_BR.grid_slaves(column=i, row=j)
 
-                # ピクセルの色からマスにつける色を設定
                 if self.image[j, i] == 0:
                     color = DRAW_COLOR
                 else:
                     color = NO_DRAW_COLOR
 
-                # 答えとなるマスの色を設定
                 widgets[0].config(
                     bg=color,
                     text=""
