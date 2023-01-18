@@ -1,6 +1,7 @@
 import cv2
 import tkinter as tk
 from tkinter import filedialog
+import time
 
 DRAW_COLOR = "#000000"
 NO_DRAW_COLOR = "#FFFFFF"
@@ -74,7 +75,7 @@ class Select():
         self.start = tk.Button(
             master,
             height = 2,
-            width = 6,
+            width = 12,
             text = "画像を選択",
             command = lambda:[self.get_path(), self.activation()]
         )
@@ -97,7 +98,10 @@ class Select():
         typ = [('イメージファイル','*.png')] 
         dir = 'C:\\pg'
         FILE_PATH = filedialog.askopenfilename(filetypes = typ, initialdir = dir)
-        canvas_image = tk.PhotoImage(file=FILE_PATH)
+        image = cv2.imread(FILE_PATH)
+        self.load_image = cv2.resize(image,dsize=[320, 320],interpolation=cv2.INTER_NEAREST)
+        cv2.imwrite('./image/resize_image/resize_image1.png', self.load_image)
+        canvas_image = tk.PhotoImage(file='./image/resize_image/resize_image1.png')
         self.canvas.create_image(160, 160, image=canvas_image)
 
     def create_textbox2(self,master):
@@ -111,7 +115,7 @@ class Select():
             self.difficulty1 = tk.Button(
                 master,
                 height = 3,
-                width = 3,
+                width = 6,
                 text = "簡単",
                 state="disable",
                 command = lambda:[self.select_0(),self.activation_start()]
@@ -121,7 +125,7 @@ class Select():
             self.difficulty2 = tk.Button(
                 master,
                 height = 3,
-                width = 3,
+                width = 6,
                 text = "普通",
                 state="disable",
                 command = lambda:[self.select_1(),self.activation_start()]
@@ -131,7 +135,7 @@ class Select():
             self.difficulty3 = tk.Button(
                 master,
                 height = 3,
-                width = 3,
+                width = 6,
                 text = "鬼畜",
                 state="disable",
                 command = lambda:[self.select_2(),self.activation_start()]
@@ -164,7 +168,7 @@ class Select():
         self.start = tk.Button(
             master,
             height = 2,
-            width = 6,
+            width = 12,
             text = "スタート",
             state="disable",
             command = self.new_life
@@ -207,13 +211,15 @@ class Picross():
         self.getRowPixels()
         self.getColumnPixels()
         self.createWidgets()
-
         self.setEvents()
 
     def readImage(self):
         if len(FILE_PATH) != 0:
             image = cv2.imread(FILE_PATH)
-            self.load_image = cv2.resize(image,dsize=[IMAGE_WIDTH, IMAGE_HEIGHT],interpolation=cv2.INTER_NEAREST
+            self.load_image = cv2.resize(
+                image,
+                dsize=[IMAGE_WIDTH, IMAGE_HEIGHT],
+                interpolation=cv2.INTER_NEAREST
             )
 
     def createBinaryImage(self):
