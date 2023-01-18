@@ -15,13 +15,11 @@ FONT = ("", 10)
 THRESHOLD = 100
 
 class Base():
-
     def __init__(self):
         self.app = tk.Tk()
         self.app.geometry("1080x1080")
         self.app.title("PICROSS")
         self.select = Select(self.app)
-
         self.app.mainloop()
 
 class Select():
@@ -32,28 +30,28 @@ class Select():
 
     def create_frame(self):
             self.frame_0 = tk.Frame(self.app)
-            self.frame_0.grid(column=0, row=0)
+            self.frame_0.pack(side=tk.TOP, pady=100)
 
             self.frame_1 = tk.Frame(self.app)
-            self.frame_1.grid(column=0, row=1)
+            self.frame_1.pack(side=tk.TOP)
 
             self.frame_2 = tk.Frame(self.app)
-            self.frame_2.grid(column=0, row=2)
+            self.frame_2.pack(side=tk.TOP)
 
             self.frame_3 = tk.Frame(self.app)
-            self.frame_3.grid(column=0, row=3)
+            self.frame_3.pack(side=tk.TOP)
 
             self.frame_4 = tk.Frame(self.app)
-            self.frame_4.grid(column=0, row=4)
+            self.frame_4.pack(side=tk.TOP)
 
             self.frame_5 = tk.Frame(self.app)
-            self.frame_5.grid(column=0, row=5)
+            self.frame_5.pack(side=tk.TOP)
 
             self.frame_6 = tk.Frame(self.app)
-            self.frame_6.grid(column=0, row=6)
+            self.frame_6.pack(side=tk.TOP)
 
             self.frame_7 = tk.Frame(self.app)
-            self.frame_7.grid(column=0, row=7)
+            self.frame_7.pack(side=tk.TOP)
 
     def create_select_widget(self):
         self.Picross_OP(self.frame_0) #0
@@ -63,13 +61,13 @@ class Select():
         self.create_textbox2(self.frame_4) #4
         self.DOD(self.frame_5) #5
         self.create_textbox3(self.frame_6) #6
-        self.create_button1(self.frame_7) 
+        self.create_button1(self.frame_7) #7
 
     def Picross_OP(self,master):
         global canvas_image1
-        self.canvas1 = tk.Canvas(master,width=320, height=60, background="white")
+        self.canvas1 = tk.Canvas(master,width=320, height=60)
         self.canvas1.grid(column=0,row=0)
-        canvas_image1 = tk.PhotoImage(file="/Users/lemon1366/Desktop/Pic/image/PICROSS.png")
+        canvas_image1 = tk.PhotoImage(file="./image/PICROSS.png")
         self.canvas1.create_image(160, 40, image=canvas_image1)
 
     def create_button(self,master):
@@ -90,11 +88,7 @@ class Select():
         self.text1.grid(column=0,row=0)
 
     def create_canvas(self,master):
-        self.canvas = tk.Canvas(
-            master,
-            width=320,
-            height=320,
-            background='white')
+        self.canvas = tk.Canvas(master, width=320, height=320,)
         self.canvas.grid(column=0,row=0)
 
     def get_path(self):
@@ -312,8 +306,8 @@ class Picross():
         self.re_image = cv2.resize(self.image10,dsize=[200, 200], interpolation=cv2.INTER_NEAREST)
         gray_image = cv2.cvtColor(self.re_image, cv2.COLOR_BGR2GRAY)
         ret2, self.image2 = cv2.threshold(gray_image, 0, 255, cv2.THRESH_OTSU)
-        cv2.imwrite('/Users/lemon1366/Desktop/Pic/image/resize_image/resize_image.png', self.image2)
-        canvas_image1 = tk.PhotoImage(file='/Users/lemon1366/Desktop/Pic/image/resize_image/resize_image.png')
+        cv2.imwrite('./image/resize_image/resize_image.png', self.image2)
+        canvas_image1 = tk.PhotoImage(file='./image/resize_image/resize_image.png')
         self.canvas1.create_image(100, 100, image=canvas_image1)
 
     def createSquares(self, master):
