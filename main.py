@@ -1,7 +1,6 @@
 import cv2
 import tkinter as tk
 from tkinter import filedialog
-import time
 
 DRAW_COLOR = "#000000"
 NO_DRAW_COLOR = "#FFFFFF"
