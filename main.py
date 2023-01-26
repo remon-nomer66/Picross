@@ -17,7 +17,8 @@ THRESHOLD = 100
 class Base():
     def __init__(self):
         self.app = tk.Tk()
-        self.app.geometry("1080x1080")
+        self.app.geometry("880x1080")
+        self.app.minsize(880,840)
         self.app.title("PICROSS")
         self.select = Select(self.app)
         self.app.mainloop()
